@@ -1,0 +1,151 @@
+﻿@page
+@model IndexModel
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Aquí empieza la sección de encabezado -->
+    <title>Calculadora de Seguro de Vehículos</title>
+    <!-- Enlace a estilos de Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- Estilos personalizados para la página -->
+    <style>
+        /* Estilos para el cuerpo de la página */
+        body {
+            padding: 20px;
+            background-color: #f5f5f5; /* Color de fondo para todo el cuerpo */
+        }
+
+        /* Estilos para el título de la aplicación */
+        .app-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos para el menú */
+        .menu {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+            .menu a {
+                margin-left: 10px;
+            }
+
+        /* Estilos para el formulario */
+        form {
+            margin-bottom: 20px;
+        }
+
+        /* Estilos para los resultados */
+        .results {
+            margin-top: 20px;
+            margin-bottom: 40px; /* Espacio entre resultados y el siguiente elemento (footer) */
+        }
+
+        /* Estilos para el grupo de formulario */
+        .form-group {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+            /* Estilos para la etiqueta del formulario */
+            .form-group label {
+                font-weight: bold;
+                margin-right: 10px;
+            }
+
+            /* Estilos para el select del formulario */
+            .form-group select {
+                flex: 1;
+                padding: 6px;
+            }
+
+        /* Estilos para el botón "Calcular" */
+        .btn-primary {
+            transition: all 0.3s ease; /* Transición suave para la animación */
+        }
+
+            .btn-primary:hover {
+                transform: scale(1.1); /* Efecto de escala al pasar el ratón sobre el botón */
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="app-title">
+            <!-- imagen arriba del titulo de la aplicación -->
+            <img src="http://palamond1.sg-host.com/wp-content/uploads/2023/10/para-appweb-01.jpg" alt="Logo" style="max-width: 100%;" />
+            <!-- Título principal -->
+            <h2>Calculadora de Seguro de Vehículos</h2>
+        </div>
+
+        <!-- Formulario para ingresar datos -->
+        <form method="post">
+            <!-- Grupo de formulario para el valor del vehículo -->
+            <div class="form-group">
+                <label for="VehicleValue"><strong>Valor del vehículo (COP):</strong></label>
+                <input asp-for="CalculatorModel.VehicleValue" type="number" step="1" min="0" class="form-control"
+                       required title="Escribe solo números sin puntos ni comas" />
+            </div>
+
+            <!-- Grupo de formulario para el número de reclamaciones -->
+            <div class="form-group">
+                <label for="ClaimCountLastYear"><strong>Número de reclamaciones el año anterior:</strong></label>
+                <select asp-for="CalculatorModel.ClaimCountLastYear" class="form-control" required
+                        title="Selecciona el número de reclamaciones del año anterior">
+                    <option value="">Seleccione</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4 o más</option>
+                </select>
+            </div>
+
+            <!-- Botón para calcular -->
+            <button type="submit" class="btn btn-primary">Calcular</button>
+        </form>
+
+       
+        @if (Model.CalculatorModel != null)
+        {
+            <!-- Sección de resultados -->
+            <div class="results">
+                <!-- Título de resultados -->
+                <h3>Resultados:</h3>
+                <!-- Tabla para mostrar los resultados -->
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td><strong>Fecha de cálculo:</strong></td>
+                            <td>@Model.CalculatorModel.Date.ToString("dd/MM/yyyy")</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Valor base:</strong></td>
+                            <td>@Model.CalculatorModel.CalculateBaseValue()</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Valor incremento:</strong></td>
+                            <td>@Model.CalculatorModel.CalculateIncrement()</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total antes de IVA:</strong></td>
+                            <td>@Model.CalculatorModel.CalculateTotalBeforeTax()</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Valor IVA:</strong></td>
+                            <td>$@(decimal.Parse(Model.CalculatorModel.CalculateTotalAfterTax(), System.Globalization.NumberStyles.Currency) - decimal.Parse(Model.CalculatorModel.CalculateTotalBeforeTax(), System.Globalization.NumberStyles.Currency))</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total a pagar:</strong></td>
+                            <td>@Model.CalculatorModel.CalculateTotalAfterTax()</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</body>
+</html>
